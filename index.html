@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=ç, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/markdown-it@12.3.0/dist/markdown-it.min.js"></script>
+  </head>
+  <body>
+    <input id="inputValue" type="text" placeholder="pasame datos tontorrones" />
+
+    <button id="enviarRequest">Enviar</button>
+
+    <div id="contenedor" style="padding: 2em">porque¿?</div>
+
+    <script>
+      const md = window.markdownit();
+
+      const texto = "Aquí va el texto que deseas mostrar poco a poco.";
+
+      document
+        .querySelector("#enviarRequest")
+        .addEventListener("click", async () => {
+          const valueText = document.querySelector("#inputValue").value;
+
+          console.log(valueText);
+
+          await test(valueText).then((response) => {
+            // document.querySelector("#contenedor").innerHTML = response.mensaje;
+            const html = md.render(response.mensaje);
+
+            document.querySelector("#contenedor").innerHTML = html
+            // let indice = 0;
+
+            // function escribirTexto(texto, elemento) {
+            //   if (indice < texto.length) {
+            //     elemento.innerHTML += texto.charAt(indice);
+            //     indice++;
+            //     setTimeout(escribirTexto, 50); // Ajusta el valor 50 para cambiar la velocidad de escritura
+            //   }
+            // }
+            // Insertar el HTML en un elemento del DOM
+            // escribirTexto(html, document.querySelector("#contenedor"));
+          });
+        });
+
+      const url = "http://127.0.0.1:5000/ejemplo";
+
+      async function test(prompt) {
+        const data = {
+          nombre: prompt,
+        };
+        return fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(
+                `Error en la solicitud: Código de estado ${response.status}`
+              );
+            }
+            return response.json();
+          })
+          .catch((error) => {
+            console.error("Error en la solicitud:", error);
+          });
+      }
+    </script>
+  </body>
+</html>
